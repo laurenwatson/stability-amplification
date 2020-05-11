@@ -1,19 +1,11 @@
 from data_utils import *
 from utils import *
 
-load_data(verbose=True)
+x,y=load_data()
+x_train, x_test, y_train, y_test=test_split(x, y)
 
-arr=np.array([1,2])
-
-sens=calculate_regularized_sensitivity(10000,0.25, 5, 2, 1)
-noisy_arr=add_noise(arr, sens, 1)
-
-print(arr)
-print(noisy_arr)
-
-
-bsense= calculate_unregularized_sensitivity(2, 2, 1)
-noisy_arr=add_noise(arr, sens, 1)
-
-print(arr)
-print(noisy_arr)
+# rand=np.random.RandomState(1000)
+original_model=train_svm_reg(x_train, y_train, 0.01)
+single_model_performance(x_test, y_test,original_model)
+private_model=private_model(x_train, y_train, original_model, 0.01, 0.01)
+single_model_performance(x_test, y_test,private_model)

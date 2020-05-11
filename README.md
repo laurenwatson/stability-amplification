@@ -26,3 +26,4 @@ This work aims to provide empirical evidence of the performance of differentiall
  - Matplotlib 3.1.3
  - Pandas 1.0.3
  - Numpy 1.18.1
+ - Scikit-Learn 0.22.1
