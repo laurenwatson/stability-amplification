@@ -18,4 +18,11 @@ This repository is not intended to be an end-to-end implementation of a fully di
 
 This work aims to provide empirical evidence of the performance of differentially private models, in order to validate theoretical work. If used practice, each training run used to obtain the average performance for each model would contribute to an overall privacy budget and other considerations such as differentially private hyperparameter tuning would be needed.
 
+
  ### Running Experiments
+
+ #### Requirements
+ Python 3.6.10
+ Matplotlib 3,1,3
+ Pandas 1.0.3
+ Numpy 1.18.1
