@@ -23,6 +23,6 @@ This work aims to provide empirical evidence of the performance of differentiall
 
  #### Requirements
  - Python 3.6.10
- - Matplotlib 3,1,3
+ - Matplotlib 3.1.3
  - Pandas 1.0.3
  - Numpy 1.18.1
