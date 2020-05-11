@@ -6,7 +6,10 @@
 
 
  ### Data
-The data included here is the *Human Activity Recognition Using Smartphones* dataset, from the UCI Machine Learning Repository.
+The data included here is:
+- The *Human Activity Recognition Using Smartphones* dataset, from the UCI Machine Learning Repository.
+- The *Adult* dataset, from the UCI Machine Learning Repository.
+
 
  ### Models
 
