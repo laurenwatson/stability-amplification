@@ -40,7 +40,7 @@ def private_model(x, y, original_model, s, epsilon, rand=None):
     new_model.intercept_=add_noise(new_model.intercept_, s, epsilon)
     return new_model
 
-def conf_matrix(x, y, model, save=False, fname=''):
+def plot_conf_matrix(x, y, model, save=False, fname=''):
     if save == False:
         plot_confusion_matrix(model, x, y, normalize='true', cmap='Blues')
         plt.show()
