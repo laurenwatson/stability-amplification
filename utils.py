@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score, plot_confusion_matrix
 from sklearn.base import clone
 from sklearn import preprocessing
 from sklearn.model_selection import learning_curve
+import statistics
 
 def add_noise(weights, s, epsilon):
     noise_vector=np.random.laplace(0, s/epsilon, weights.shape)
@@ -32,7 +33,8 @@ def train_svm_reg(x, y, lam, rand=None):
 
 def single_model_performance(x, y, model):
     new_y=model.predict(x)
-    print('Test Accuracy', accuracy_score(y, new_y))
+    # print('Test Accuracy', accuracy_score(y, new_y))
+    return accuracy_score(y, new_y)
 
 def private_model(x, y, original_model, s, epsilon, rand=None):
     new_model=clone(original_model)
@@ -92,6 +94,50 @@ def plot_datasize_curve(estimator, private_estimator,title, X, y, axes=None, yli
     ax.plot(train_sizes, train_scores_mean, 'o-', color="r",
                  label="Training score")
     ax.plot(train_sizes, ptrain_scores_mean, 'o-', color="g",
+                 label="Private Training score")
+    ax.legend(loc="best")
+
+
+    plt.show()
+
+def plot_reg_curve(estimator, private_estimator,title, X, y, x_test, y_test, s, epsilon,no_runs=10,axes=None, ylim=None, cv=None,
+                        n_jobs=None, reg_sizes=np.linspace(.01, 1.0, 10)):
+
+    if axes is None:
+        _, ax = plt.subplots(figsize=(5, 5))
+
+    ax.set_title(title)
+    if ylim is not None:
+        axes[0].set_ylim(*ylim)
+    ax.set_xlabel("Regularization term")
+    ax.set_ylabel("Score")
+
+    train_errors_mean, priv_train_errors_mean, train_errors_std, priv_train_errors_std =[], [], [],[]
+    for alpha in reg_sizes:
+        errs=[]
+        p_errs=[]
+        for run in range(0, no_runs):
+            estimator.set_params(alpha=alpha).fit(X, y)
+            priv_est=private_model(X, y, estimator, s, epsilon)
+            errs.append(single_model_performance(x_test, y_test, estimator))
+            p_errs.append(single_model_performance(x_test, y_test, priv_est))
+        train_errors_mean.append(sum(errs)/len(errs))
+        priv_train_errors_mean.append(sum(p_errs)/len(p_errs))
+        train_errors_std.append(statistics.stdev(errs))
+        priv_train_errors_std.append(statistics.stdev(p_errs))
+
+
+    ax.grid()
+
+    ax.fill_between(reg_sizes, np.array(train_errors_mean) - np.array(train_errors_std),
+                         np.array(train_errors_mean) + np.array(train_errors_std), alpha=0.1,
+                         color="r")
+    ax.fill_between(reg_sizes, np.array(priv_train_errors_mean) - np.array(priv_train_errors_std),
+                         np.array(priv_train_errors_mean) + np.array(priv_train_errors_std), alpha=0.1,
+                         color="g")
+    ax.plot(reg_sizes, train_errors_mean, 'o-', color="r",
+                 label="Training score")
+    ax.plot(reg_sizes, priv_train_errors_mean, 'o-', color="g",
                  label="Private Training score")
     ax.legend(loc="best")
 
