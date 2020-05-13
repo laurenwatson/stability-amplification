@@ -6,6 +6,7 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import accuracy_score, plot_confusion_matrix
 from sklearn.base import clone
 from sklearn import preprocessing
+from sklearn.model_selection import learning_curve
 
 def add_noise(weights, s, epsilon):
     noise_vector=np.random.laplace(0, s/epsilon, weights.shape)
@@ -47,3 +48,52 @@ def plot_conf_matrix(x, y, model, save=False, fname=''):
     else:
         plot_confusion_matrix(model, x, y, normalize='true', cmap='Blues')
         plt.savefig(fname)
+
+
+
+def plot_datasize_curve(estimator, private_estimator,title, X, y, axes=None, ylim=None, cv=None,
+                        n_jobs=None, train_sizes=np.linspace(.05, 1.0, 5)):
+
+    if axes is None:
+        _, ax = plt.subplots(figsize=(5, 5))
+
+    ax.set_title(title)
+    if ylim is not None:
+        axes[0].set_ylim(*ylim)
+    ax.set_xlabel("No. Training examples")
+    ax.set_ylabel("Score")
+
+    train_sizes, train_scores, test_scores, fit_times, _ = \
+        learning_curve(estimator, X, y, cv=cv, n_jobs=n_jobs,
+                       train_sizes=train_sizes,
+                       return_times=True)
+    priv_train_sizes, priv_train_scores, priv_test_scores, priv_fit_times, _ = \
+        learning_curve(private_estimator, X, y, cv=cv, n_jobs=n_jobs,
+                       train_sizes=train_sizes,
+                       return_times=True)
+    train_scores_mean = np.mean(train_scores, axis=1)
+    train_scores_std = np.std(train_scores, axis=1)
+    test_scores_mean = np.mean(test_scores, axis=1)
+    test_scores_std = np.std(test_scores, axis=1)
+
+    ptrain_scores_mean = np.mean(priv_train_scores, axis=1)
+    ptrain_scores_std = np.std(priv_train_scores, axis=1)
+    ptest_scores_mean = np.mean(priv_test_scores, axis=1)
+    ptest_scores_std = np.std(priv_test_scores, axis=1)
+
+
+    # Plot learning curve
+    ax.grid()
+    ax.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                         train_scores_mean + train_scores_std, alpha=0.1,
+                         color="r")
+    ax.fill_between(priv_train_sizes, ptrain_scores_mean - ptrain_scores_std, ptrain_scores_mean + ptrain_scores_std, alpha=0.1,
+                         color="g")
+    ax.plot(train_sizes, train_scores_mean, 'o-', color="r",
+                 label="Training score")
+    ax.plot(train_sizes, ptrain_scores_mean, 'o-', color="g",
+                 label="Private Training score")
+    ax.legend(loc="best")
+
+
+    plt.show()

@@ -10,4 +10,4 @@ single_model_performance(x_test, y_test,original_model)
 private_model=private_model(x_train, y_train, original_model, 0.01, 0.01)
 single_model_performance(x_test, y_test,private_model)
 
-conf_matrix(x_test, y_test,original_model, True, 'test.png')
+plot_datasize_curve(original_model, private_model,'Model performance', x_train, y_train)
