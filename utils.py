@@ -1,9 +1,9 @@
-import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import math
 from sklearn.linear_model import SGDClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, plot_confusion_matrix
 from sklearn.base import clone
 from sklearn import preprocessing
 
@@ -39,3 +39,11 @@ def private_model(x, y, original_model, s, epsilon, rand=None):
     new_model.coef_=add_noise(new_model.coef_, s, epsilon)
     new_model.intercept_=add_noise(new_model.intercept_, s, epsilon)
     return new_model
+
+def conf_matrix(x, y, model, save=False, fname=''):
+    if save == False:
+        plot_confusion_matrix(model, x, y, normalize='true', cmap='Blues')
+        plt.show()
+    else:
+        plot_confusion_matrix(model, x, y, normalize='true', cmap='Blues')
+        plt.savefig(fname)
