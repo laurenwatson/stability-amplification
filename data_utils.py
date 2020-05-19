@@ -7,6 +7,8 @@ from sklearn.preprocessing import MinMaxScaler
 def load_data(dataset='adult', verbose=False):
     if dataset=='adult':
         x, y = load_adult(verbose)
+    if dataset=='har':
+        x, y = load_har(verbose)
     return x, y
 
 def load_adult(verbose=False):
@@ -41,6 +43,51 @@ def load_adult(verbose=False):
         print('Loaded Adult Dataset')
         print('Datasize:', df.shape[0])
         print('No. Features:', df.shape[1])
+
+    return df, y
+
+def load_har(verbose=False):
+    filename="data/HAR/train/X_train.txt"
+
+    data = []
+    file = open(filename, 'r')
+    data.append(
+            [np.array(inputs, dtype=np.float32) for inputs in [
+                    row.replace('  ', ' ').strip().split(' ') for row in file
+                ]]
+            )
+    file.close()
+
+    x=np.array(data)[0]
+
+    feature_file="data/HAR/features.txt"
+    features = []
+    file = open(feature_file, 'r')
+            # Read dataset from disk, dealing with text files' syntax
+    features.append(
+            [row.split(' ')[1].strip() for row in file]
+
+            )
+    file.close()
+
+    y_file="data/HAR/train/y_train.txt"
+    y = []
+    file = open(y_file, 'r')
+            # Read dataset from disk, dealing with text files' syntax
+    y.append(
+            [row.strip() for row in file]
+
+            )
+    file.close()
+    y=np.array(y).T.ravel()
+    df=pd.DataFrame(data=x, index=None, columns=features)
+
+    #print some info
+    if verbose==True:
+        print('Loaded HAR Dataset')
+        print('Datasize:', df.shape[0])
+        print('No. Features:', df.shape[1])
+        print('Len y', y.shape)
 
     return df, y
 
