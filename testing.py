@@ -12,4 +12,4 @@ from sensitivity import *
 #
 # plot_reg_curve(original_model, private_model,'Model performance', x_train, y_train, x_test, y_test, 0.01, 0.1)
 
-print(elastic_net_sensitivity(10, 1, 100000, 0.1, 'log'))
+print(elastic_net_sensitivity( 1, 100000, 0.1, 'log'))
